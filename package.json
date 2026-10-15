@@ -11,6 +11,7 @@
   "description": "",
   "type": "module",
   "dependencies": {
-    "express": "^5.3.0"
+    "express": "^5.3.0",
+    "express-list-endpoints": "^7.1.1"
   }
 }
