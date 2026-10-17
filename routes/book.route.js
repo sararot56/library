@@ -4,7 +4,8 @@ import { books } from "../db.js";
 const router=express.Router();
 
 router.get('/',(req,res)=>{
-    res.send(books);
+    res.send({message: 'הבקשה התקבלה בהצלחה',
+      date:  req.currentDate,data:books});
 });
 router.get('/:id',(req,res)=>{
     const bookId=Number(req.params.id);
@@ -12,7 +13,7 @@ router.get('/:id',(req,res)=>{
     if(!book){
         return res.status(404).send({message:'the book isnot find'});
     }
-    res.send(book);
+    res.send({date:  req.currentDate,book});
 
 });
 
