@@ -18,8 +18,12 @@ const app=express();
 const port=5000;
 
 app.use(express.json());
+//בשביל העלאת קבצים
+app.use(express.urlencoded({ extended: true }));
+
 
 app.use(cors());
+app.use(express.static('public'));
 // 2. Morgan: מדפיס לטרמינל את נתוני הבקשה (כגון מתודת HTTP, נתיב, קוד תגובה וזמן עיבוד) במצב פיתוח
 app.use(morgan('dev'));
 // 3. Helmet: מגן על האפליקציה על ידי הגדרת כותרות HTTP שונות כנגד חולשות אבטחה נפוצות
