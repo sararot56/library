@@ -1,4 +1,5 @@
 import express from "express";
+import dotenv from 'dotenv';
 import cors from "cors";                  // מאפשר גישה מכל קליינט חיצוני
 import morgan from "morgan";              // הדפסת נתונים על בקשות במצב פיתוח
 import helmet from "helmet";              // אבטחת כותרות HTTP
@@ -12,10 +13,13 @@ import timeBlocker from './middlewares/timeBlocker.js';
 import errorHandler from './middlewares/errorHandler.js';
 import apiRouter from './routes/index.route.js'
 import listEndpoints from 'express-list-endpoints';
+import { connectDB } from "./config/db.js";
 
-
+dotenv.config();
 const app=express();
-const port=5000;
+
+connectDB();
+const port=process.env.PORT||5000;
 
 app.use(express.json());
 //בשביל העלאת קבצים
