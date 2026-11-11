@@ -18,7 +18,7 @@ import { connectDB } from "./config/db.js";
 dotenv.config();
 const app=express();
 
-connectDB();
+connectDB()
 const port=process.env.PORT||5000;
 
 app.use(express.json());
@@ -45,6 +45,7 @@ app.use(timeBlocker({
     inactiveDays: [5, 6] // יום שישי ושבת
 }));
 app.use('/api',apiRouter);
+
 app.all('/',(req,res)=>{
     res.send("hello to my library");
 });
