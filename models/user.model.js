@@ -33,8 +33,8 @@ const userSchema =new Schema({
         required:true,
         minlength: [4, 'הסיסמה חייבת להכיל לפחות 4 תווים']
     },
-    borrowedBooks: [
-        {
+    borrowedBooks: {
+      type:[{
           bookId: {
             type: Schema.Types.ObjectId,
             ref: 'Book',
@@ -43,11 +43,21 @@ const userSchema =new Schema({
           name: {
             type: String,
             required: true
+          },
+          returnDate:{
+            type:Date,
+            required: true
           }
         }
-      ]
-     
-});
+      ],
+      validate: {
+        validator: function(v) {
+          return v.length <= 3;
+        },
+        message: 'משתמש יכול להשאיל עד 3 ספרים בלבד בו-זמנית'
+      }
+    }
+    });
 
 const User=model('User',userSchema);
 

@@ -1,4 +1,4 @@
-import {model ,Schema} from "mongoose";
+import mongoose, {model ,Schema} from "mongoose";
 
 const bookSchema =new Schema({
     name:{
@@ -41,6 +41,15 @@ const bookSchema =new Schema({
             trim: true,
             lowercase: true,
             match: [/^\S+@\S+\.\S+$/, 'נא להזין כתובת אימייל תקינה']
+        },
+        isBorrowed:{
+            type:Boolean,
+            default:false
+        },
+        borrowedBy:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'User',
+            default:null
         }
     }  
 });
