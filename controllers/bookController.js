@@ -74,23 +74,66 @@ export const updateBook= async (req,res,next)=>{
     }
 };
 
-// export const addBorrow=(req,res)=>{
-// const bookId=Number(req.params.id);
-// const bookIndex=books.findIndex(b=>b.id===bookId);
-// const {customerCode}=req.body;
-// if (bookIndex === -1) {
-//     return res.status(404).send({ message: 'הספר לא נמצא' });
-//   }
-//   if (books[bookIndex].isBorrowed) {
-//     return res.status(400).send({ message: 'הספר כבר מושאל' });
-//   }
-//   books[bookIndex].isBorrowed=true;
-//   books[bookIndex].Borroweds.push({
-//     date:new Date().toISOString().split('T')[0],
-//     customerCode
-//   });
-//   res.send(books[bookIndex]);
-// };
+export const borrowBook=async(req,res,next)=>{
+try {
+  const { bookId, userId, returnDate } = req.body;
+
+    // 1. בדיקה האם הספר קיים
+    const book = await Book.findById(bookId);
+    if (!book) {
+      return res.status(404).json({ message: 'הספר לא נמצא' });
+    }
+
+    // 2. בדיקה האם הספר כבר מושאל
+    if (book.isBorrowed) {
+      return res.status(400).json({ message: 'הספר כבר מושאל למשתמש אחר' });
+    }
+
+    // 3. בדיקה האם המשתמש קיים
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'המשתמש לא נמצא' });
+    }
+
+    // 4. בדיקת מגבלה: האם למשתמש יש פחות מ-3 ספרים מושאלים
+    if (user.borrowedBooks.length >= 3) {
+      return res.status(400).json({ message: 'המשתמש הגיע למכסה המקסימלית של 3 ספרים מושאלים' });
+    }
+
+    // 5. עדכון נתוני הספר
+    book.isBorrowed = true;
+    book.borrowedBy = userId;
+    await book.save();
+
+    // 6. הוספת הספר למערך הספרים של המשתמש
+    user.borrowedBooks.push({
+      bookId: book._id,
+      name: book.name,
+      returnDate: new Date(returnDate)
+    });
+    await user.save();
+
+    // 7. יצירת תיעוד היסטוריית השאלה
+    const newBorrowing = new Borrowing({
+      userId,
+      bookId,
+      returnDate: new Date(returnDate),
+      status: 'active'
+    });
+    await newBorrowing.save();
+
+    res.status(200).json({
+      message: 'הספר הושאל בהצלחה',
+      borrowedBook: {
+        bookId: book._id,
+        name: book.name,
+        returnDate
+      }
+    });
+} catch (error) {
+  next(error);
+}
+};
 
 // export const addReturen=(req,res)=>{
 //     const bookId=Number(req.params.id);

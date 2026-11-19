@@ -41,7 +41,7 @@ const bookSchema =new Schema({
             trim: true,
             lowercase: true,
             match: [/^\S+@\S+\.\S+$/, 'נא להזין כתובת אימייל תקינה']
-        },
+        } }  ,
         isBorrowed:{
             type:Boolean,
             default:false
@@ -51,7 +51,6 @@ const bookSchema =new Schema({
             ref:'User',
             default:null
         }
-    }  
 });
 
 const Book=model('Book',bookSchema);
